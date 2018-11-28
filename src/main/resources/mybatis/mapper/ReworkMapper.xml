@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.lifesense.quality.dao.ReworkDao">
+	 <resultMap id="productMap" type="com.lifesense.quality.domain.Product">
+        <id column="ID" jdbcType="BIGINT" property="id"/>
+        <result column="SHEET_PO" jdbcType="VARCHAR" property="sheetPo"/>
+        <result column="PRODUCT_NO" jdbcType="VARCHAR" property="productNo"/>
+        <result column="PRODUCT_TYPE_code" jdbcType="VARCHAR" property="productTypeCode"/>
+        <result column="CPSN" jdbcType="VARCHAR" property="cpsn"/>
+        <result column="BLSN" jdbcType="VARCHAR" property="blsn"/>
+        <result column="BBSN" jdbcType="VARCHAR" property="bbsn"/>
+        <result column="CGQSN" jdbcType="VARCHAR" property="cgqsn"/>
+        <result column="SMSSN" jdbcType="VARCHAR" property="smssn"/>
+        <result column="BXKSN" jdbcType="VARCHAR" property="bxksn"/>
+        <result column="CHSN" jdbcType="VARCHAR" property="chsn"/>
+        <result column="VALID" jdbcType="INTEGER" property="valid"/>
+        <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="MODIFY_TIME" jdbcType="TIMESTAMP" property="modifyTime"/>
+    </resultMap>
+     <resultMap id="processRecordMap" type="com.lifesense.quality.domain.ProcessRecord">
+        <id column="ID" jdbcType="BIGINT" property="id"/>
+        <result column="PRODUCT_ID" jdbcType="BIGINT" property="productId"/>
+        <result column="PRODUCT_LINE" jdbcType="VARCHAR" property="productLine"/>
+        <result column="PROCESS_CODE" jdbcType="VARCHAR" property="processCode"/>
+        <result column="STATUS" jdbcType="VARCHAR" property="status"/>
+        <result column="USER_ID" jdbcType="BIGINT" property="userId"/>
+        <result column="DESCRIPTION" jdbcType="VARCHAR" property="description"/>
+        <result column="CONTENT_JSON" jdbcType="VARCHAR" property="contentJson"/>
+        <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="PROCESSNAME" jdbcType="VARCHAR" property="processName"/>
+    </resultMap>
+	<select id="queryCreateTimeByBlsn" resultType="String" parameterType="String">
+		SELECT CREATE_TIME FROM QUALITY.PRODUCT WHERE BLSN=#{blsn}
+	</select>
+	<select id="queryProductByCreateTime" resultMap="productMap" parameterType="String">
+		SELECT * FROM QUALITY.PRODUCT WHERE CREATE_TIME=TO_DATE(#{createTime},'YYYY-MM-DD HH24:MI:SS')
+	</select>
+	<select id="queryProcessRecordByProductId" resultMap="processRecordMap" parameterType="Long">
+		SELECT QUALITY.PROCESS_RECORD.*,QUALITY.PROCESS.NAME AS processName FROM QUALITY.PROCESS_RECORD INNER JOIN QUALITY.PROCESS ON QUALITY.PROCESS_RECORD.PROCESS_CODE=QUALITY.PROCESS.CODE WHERE PRODUCT_ID=#{id}
+	</select>
+</mapper>
